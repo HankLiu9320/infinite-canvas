@@ -1,0 +1,101 @@
+handler/ai.go
+  s_d8885fafc2aedf::t_58ab50fb7e1a7a 159-162
+  s_d8885fafc2aedf::t_fadeb6962ee923 39
+  s_d8885fafc2aedf::t_c3a2e8462ef6ff 116,118-119
+service/user_data.go
+  s_d8885fafc2aedf::t_22aa234b282862 86-88
+service/workflow_agent.go
+  s_d8885fafc2aedf::t_22aa234b282862 53-60,62-69
+docs/progress/pending-test.md
+  s_d8885fafc2aedf::t_c3a2e8462ef6ff 7-10,12-17
+  s_d8885fafc2aedf::t_fadeb6962ee923 21-22
+  s_d8885fafc2aedf::t_09374a6b9068b5 11,18
+  s_d8885fafc2aedf::t_46d6696dca342e 23-24
+  s_d8885fafc2aedf::t_70c2dae1ed92bf 19-20
+docs/backend/system-settings.md
+  s_d8885fafc2aedf::t_c3a2e8462ef6ff 111-112,122
+service/model_protocol.go
+  s_d8885fafc2aedf::t_22aa234b282862 4,8,14-19,51,54,57-61,133,143
+  s_d8885fafc2aedf::t_c3a2e8462ef6ff 52-53
+handler/codex.go
+  s_d8885fafc2aedf::t_58ab50fb7e1a7a 1-16,18-21,23-72,74-87,97-104,106-112,114-123,125-138
+  s_d8885fafc2aedf::t_09374a6b9068b5 88-93,95-96
+web/src/app/(user)/page.tsx
+  s_d8885fafc2aedf::t_00ebace8b1f1c2 131
+web/src/components/layout/app-config-modal.tsx
+  s_d8885fafc2aedf::t_70c2dae1ed92bf 24,182-184,227-229
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 20,478
+.env.example
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 25-31
+web/src/lib/model-channel.test.ts
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 7,25
+service/codex_client.go
+  s_d8885fafc2aedf::t_60b40ebc1ef92b 103
+  s_d8885fafc2aedf::t_94fa160021df1a 62,124,172,179-185,199-211,267,269
+  s_d8885fafc2aedf::t_63527293f267e7 1-33,45-50,52-61,63-67,79-102,104-123,125,135-171,173-178,186-190,194-198,212-253,260-266,268,270-273
+  s_d8885fafc2aedf::t_b8405cd186a130 34-44,51
+  s_d8885fafc2aedf::t_5822afb4d31693 68-78
+  s_d8885fafc2aedf::t_46d6696dca342e 126-134,191-193
+CHANGELOG.md
+  s_d8885fafc2aedf::t_70c2dae1ed92bf 8
+  s_d8885fafc2aedf::t_fadeb6962ee923 7
+  s_d8885fafc2aedf::t_46d6696dca342e 5-6
+  s_d8885fafc2aedf::t_c3a2e8462ef6ff 9-10
+repository/canvas_image_task.go
+  s_d8885fafc2aedf::t_63527293f267e7 13-17,20
+  s_d8885fafc2aedf::t_5822afb4d31693 9-12,18-19
+web/src/app/(user)/canvas/[id]/canvas-client-page.tsx
+  s_d8885fafc2aedf::t_46d6696dca342e 5500
+Dockerfile
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 55-56,58-59
+service/settings.go
+  s_d8885fafc2aedf::t_22aa234b282862 258,506,531-533,1124,1163
+web/src/hooks/use-autodl-workflow.ts
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 29
+web/src/stores/use-config-store.ts
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 336
+service/codex.go
+  s_d8885fafc2aedf::t_acb738563df2da 449-454
+  s_d8885fafc2aedf::t_58ab50fb7e1a7a 25,131-132,144-146,342,388,394-397,413-417,425,440-441,601-610,614-667
+  s_d8885fafc2aedf::t_c3a2e8462ef6ff 58,101-111,273,418-424,611-613
+  s_d8885fafc2aedf::t_01a75e27c0f546 314-316,352-360,407-411
+  s_d8885fafc2aedf::t_60b40ebc1ef92b 317-320
+  s_d8885fafc2aedf::t_75042f61d73bed 569-574
+  s_d8885fafc2aedf::t_46d6696dca342e 63-85,90,209-210,212-213,215-220,239,295,321,334,368-380,389-393,404-406,439,445-447,460-469,580-582,703-724
+  s_d8885fafc2aedf::t_3953dbb1ab2012 1-14,16-24,26-57,59-62,86-89,91-100,112-130,133-143,147-208,221-238,240-272,274-276,278-294,296-299,304,306-313,328-329,333,335-341,343-348,361-367,381-387,398-403,412,438,442-444,448,455-459,470-515,532-568,578-579,583-600,725
+  s_d8885fafc2aedf::t_22aa234b282862 300-302,426-437,668-702
+  s_d8885fafc2aedf::t_94fa160021df1a 15,211,214,303,305,322-327,330-332,349-351
+  s_d8885fafc2aedf::t_09374a6b9068b5 277
+config/config.go
+  s_d8885fafc2aedf::t_63527293f267e7 26-29
+web/src/lib/model-channel.ts
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 2,20
+model/setting.go
+  s_d8885fafc2aedf::t_63527293f267e7 24
+web/src/services/api/admin.ts
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 191
+web/src/app/(user)/canvas/components/canvas-node.tsx
+  s_d8885fafc2aedf::t_46d6696dca342e 533
+main.go
+  s_d8885fafc2aedf::t_22aa234b282862 4-5,7-11,29-34,38-54
+docs/backend/local-development.md
+  s_d8885fafc2aedf::t_c3a2e8462ef6ff 57-90
+web/src/app/(admin)/admin/settings/page.tsx
+  s_d8885fafc2aedf::t_ad2cbfec61cf05 266,270,297,916,938-942,974,1214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "d38f702a449d9bcc539a2f933a5aaa368bc3ad1b",
+  "prompts": {},
+  "sessions": {
+    "s_d8885fafc2aedf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13487-5a23-7883-b3d4-b74cc1ef519f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "liujianjia <liujianjia@jd.com>"
+    }
+  }
+}
