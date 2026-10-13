@@ -170,6 +170,9 @@ func (client *codexClient) write(value any) error {
 }
 
 func (client *codexClient) call(ctx context.Context, method string, params any, result any, onLateResult ...func(json.RawMessage)) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	id := client.nextID.Add(1)
 	key := strconv.FormatUint(id, 10)
 	reply := make(chan codexRPCMessage, 1)

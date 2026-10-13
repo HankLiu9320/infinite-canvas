@@ -481,11 +481,10 @@ func interruptCodexTurn(client *codexClient, threadID, turnID string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if turnID == "" {
-		client.close(errors.New("Codex 任务启动中断"))
 		return
 	}
 	if err := client.call(ctx, "turn/interrupt", map[string]string{"threadId": threadID, "turnId": turnID}, nil); err != nil {
-		client.close(err)
+		log.Printf("Codex 任务中断失败：thread=%s turn=%s err=%v", threadID, turnID, err)
 	}
 }
 
