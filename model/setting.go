@@ -21,6 +21,7 @@ type ModelChannel struct {
 	BaseURL      string          `json:"baseUrl"`
 	APIKey       string          `json:"apiKey"`
 	Models       []string        `json:"models"`
+	CodexModel   string          `json:"codexModel,omitempty"`
 	Weight       int             `json:"weight"`
 	Timeout      int             `json:"timeout"`
 	Enabled      bool            `json:"enabled"`
@@ -77,12 +78,12 @@ type WorkflowEntry struct {
 }
 
 type WorkflowSummary struct {
-	Provider   string  `json:"provider"`
-	Kind       string  `json:"kind"`
-	WorkflowID string  `json:"workflowId"`
-	Title      string  `json:"title"`
-	Capability string  `json:"capability"`
-	Enabled    bool    `json:"enabled"`
+	Provider   string `json:"provider"`
+	Kind       string `json:"kind"`
+	WorkflowID string `json:"workflowId"`
+	Title      string `json:"title"`
+	Capability string `json:"capability"`
+	Enabled    bool   `json:"enabled"`
 }
 
 // ModelCost 模型算力点配置。

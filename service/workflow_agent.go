@@ -50,6 +50,23 @@ func DraftCreativeWorkflow(ctx context.Context, request WorkflowAgentDraftReques
 	}
 
 	messages := workflowAgentMessages(prompt, request.References)
+	if IsCodexChannel(channel) {
+		result, callErr := RunCodexAI(ctx, channel, CodexAIRequest{Model: modelName, Messages: messages}, false, nil)
+		draft, warnings, err := normalizeWorkflowDraft(result.Text, request.Scope)
+		if callErr != nil {
+			err = callErr
+		}
+		status, errorMessage := http.StatusOK, ""
+		if err != nil {
+			refundCredits()
+			status, errorMessage = http.StatusBadGateway, err.Error()
+		}
+		SaveAICallLog(AICallLogInput{UserID: user.ID, UserDisplayName: firstNonEmpty(user.DisplayName, user.Username), Endpoint: "/workflows/agent-draft", Method: http.MethodPost, Model: modelName, ChannelID: channel.ID, ChannelName: channel.Name, Status: status, DurationMs: time.Since(startedAt).Milliseconds(), Credits: credits, RequestBody: prompt, ResponseBody: result.Text, Error: errorMessage})
+		if err != nil {
+			return WorkflowAgentDraftResponse{}, err
+		}
+		return WorkflowAgentDraftResponse{Draft: draft, Warnings: warnings, Model: modelName}, nil
+	}
 	body, _ := json.Marshal(map[string]any{
 		"model":       modelName,
 		"messages":    messages,
@@ -339,5 +356,3 @@ func maxInt(a, b int) int {
 	}
 	return b
 }
-
-

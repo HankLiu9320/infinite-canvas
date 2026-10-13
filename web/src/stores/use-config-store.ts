@@ -333,6 +333,7 @@ function isTextModelName(model: string) {
 export function modelMatchesCapability(model: string, capability?: ModelCapability, protocol = "", modelCapabilities: ModelCapabilities = {}) {
     if (!capability) return true;
     if (Object.hasOwn(modelCapabilities, model)) return modelCapabilities[model] === capability;
+    if (protocol === "codex") return capability === (model === "codex-image" ? "image" : "text");
     if (protocol === "autodl") {
         if (capability === "audio") return model === "indextts2-v1";
         return capability === "video" && (model.startsWith("minimax_h3_") || model === "wan2.2animate-v4-motion_retargeting");

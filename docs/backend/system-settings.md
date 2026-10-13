@@ -108,7 +108,8 @@ description: settings 表中 public 和 private 配置结构说明
 
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
-| `protocol` | string | 协议，支持 OpenAI、Gemini、Grok2API、MiniMax、APIMart、KIE、MiMo |
+| `protocol` | string | 协议，含 OpenAI、Gemini、Grok2API、MiniMax、APIMart、KIE、MiMo 和 Codex App Server（`codex`） |
+| `codexModel` | string | Codex 功能入口的实际执行模型 ID，可选；留空使用 CLI 默认模型，不公开给前端 |
 | `name` | string | 渠道名称 |
 | `baseUrl` | string | 渠道接口地址 |
 | `apiKey` | string | 渠道密钥 |
@@ -118,7 +119,7 @@ description: settings 表中 public 和 private 配置结构说明
 | `enabled` | boolean | 是否启用 |
 | `remark` | string | 备注 |
 
-后端调用模型时，会从已启用、已配置 `baseUrl` 和 `apiKey`、且 `models` 包含目标模型的渠道中选择一个。
+后端调用模型时，会从已启用且 `models` 包含目标模型的渠道中选择一个。普通 HTTP 渠道需要 `baseUrl` 和 `apiKey`；`codex` 系统渠道使用 Go 管理的 app-server 和后端 Codex 登录状态，不需要这两项，也不使用自定传参转译。保存时默认补齐 `codex-text`、`codex-image` 的文本/图片分类；管理员可拉取实际模型 ID。配置和验证方式见 [本地开发](./local-development.md#go-后端-codex-渠道验证)。此接入复用 `settings` JSON 和既有图片任务表，没有新增数据表。
 
 公开渠道信息增加 `parameterTranslationModels: string[]`，只列出已配置生成请求且允许使用的模型名，供前端选择调用入口；不公开转译原文和密钥。个人渠道原文随用户 `modelConfig.channelTranslations` 保存，每项为 `{ channelId, parameterTranslation }`，与外部 `localChannels` 的 URL、密钥和模型配置分开。
 

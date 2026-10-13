@@ -6,6 +6,19 @@ import (
 	"github.com/tigerowo/infinite-canvas/model"
 )
 
+func FailInterruptedCodexImageTasks(channelIDs []string, stamp, message string) error {
+	if len(channelIDs) == 0 {
+		return nil
+	}
+	db, err := DB()
+	if err != nil {
+		return err
+	}
+	return db.Model(&model.CanvasImageTask{}).
+		Where("channel_id IN ? AND status IN ?", channelIDs, []string{"queued", "processing"}).
+		Updates(map[string]any{"status": "failed", "error": message, "updated_at": stamp, "completed_at": stamp}).Error
+}
+
 func SaveCanvasImageTask(task model.CanvasImageTask) (model.CanvasImageTask, error) {
 	db, err := DB()
 	if err != nil {

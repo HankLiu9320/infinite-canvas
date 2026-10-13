@@ -83,6 +83,9 @@ func SelectUserLocalModelChannelForModel(userID string, modelName string, channe
 		if strings.TrimSpace(channel.ID) != channelID {
 			continue
 		}
+		if strings.EqualFold(strings.TrimSpace(channel.Protocol), ModelChannelProtocolCodex) {
+			return model.ModelChannel{}, errors.New("Codex 只能使用管理员配置的系统渠道")
+		}
 		baseURL := strings.TrimSpace(channel.BaseURL)
 		apiKey := strings.TrimSpace(channel.APIKey)
 		if baseURL == "" || apiKey == "" {

@@ -4,6 +4,7 @@ import { directAIProviderForProtocol, modelChannelApiKeyUrls, modelChannelDefaul
 
 test("built-in protocol options retain both settings panels' labels and order", () => {
     assert.deepEqual(modelChannelProtocolOptions, [
+        { label: "Codex App Server", value: "codex" },
         { label: "OpenAI", value: "openai" },
         { label: "Gemini", value: "gemini" },
         { label: "Grok2API", value: "grok2api" },
@@ -21,6 +22,7 @@ test("built-in protocol options retain both settings panels' labels and order", 
 
 test("built-in protocols retain all existing default URLs and API Key links", () => {
     assert.deepEqual(modelChannelDefaultBaseUrls, {
+        codex: "",
         openai: "https://api.openai.com",
         gemini: "https://generativelanguage.googleapis.com",
         grok2api: "",

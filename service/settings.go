@@ -11,8 +11,8 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"sort"
 	"slices"
+	"sort"
 	"strings"
 	"time"
 
@@ -255,6 +255,7 @@ func normalizePrivateSetting(setting model.PrivateSetting) model.PrivateSetting 
 	setting.AILog = normalizeAILogSetting(setting.AILog)
 	setting.Storage = normalizePrivateStorageSetting(setting.Storage)
 	for i := range setting.Channels {
+		setting.Channels[i] = normalizeCodexChannel(setting.Channels[i])
 		if setting.Channels[i].Protocol == "" {
 			setting.Channels[i].Protocol = "openai"
 		}
@@ -502,6 +503,7 @@ func isTextModelName(modelName string) bool {
 }
 
 func normalizeModelChannel(channel model.ModelChannel) model.ModelChannel {
+	channel = normalizeCodexChannel(channel)
 	if channel.Protocol == "" {
 		channel.Protocol = "openai"
 	}
@@ -526,6 +528,9 @@ func isWorkflowChannelProtocol(protocol string) bool {
 
 func resolveAdminChannel(index *int, channel model.ModelChannel) (model.ModelChannel, error) {
 	resolved := normalizeModelChannel(channel)
+	if IsCodexChannel(resolved) {
+		return resolved, nil
+	}
 	if strings.TrimSpace(resolved.APIKey) == "" {
 		settings, err := repository.GetSettings()
 		if err != nil {
@@ -1116,7 +1121,7 @@ func modelChannelsForModel(channels []model.ModelChannel, modelName string) []mo
 		if isWorkflowChannelProtocol(channel.Protocol) {
 			continue
 		}
-		if !channel.Enabled || channel.BaseURL == "" || channel.APIKey == "" {
+		if !channel.Enabled || (!IsCodexChannel(channel) && (channel.BaseURL == "" || channel.APIKey == "")) {
 			continue
 		}
 		for _, item := range channel.Models {
@@ -1155,7 +1160,7 @@ func publicChannelInfos(channels []model.ModelChannel, availableModels, availabl
 			}
 			continue
 		}
-		if !channel.Enabled || channel.BaseURL == "" || len(channel.Models) == 0 {
+		if !channel.Enabled || (!IsCodexChannel(channel) && channel.BaseURL == "") || len(channel.Models) == 0 {
 			continue
 		}
 		models := append([]string{}, channel.Models...)

@@ -1,20 +1,22 @@
 package service
 
 import (
+	"context"
 	"net/http"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/tigerowo/infinite-canvas/model"
 )
 
 const (
-	ModelChannelProtocolOpenAI   = "openai"
-	ModelChannelProtocolGrok2API = "grok2api"
-	ModelChannelProtocolAPIMart  = "apimart"
-	ModelChannelProtocolKIE      = "kie"
-	ModelChannelProtocolAutoDL   = "autodl"
-	ModelChannelProtocolArk      = "ark"
+	ModelChannelProtocolOpenAI     = "openai"
+	ModelChannelProtocolGrok2API   = "grok2api"
+	ModelChannelProtocolAPIMart    = "apimart"
+	ModelChannelProtocolKIE        = "kie"
+	ModelChannelProtocolAutoDL     = "autodl"
+	ModelChannelProtocolArk        = "ark"
 	ModelChannelProtocolTokenDance = "tokendance"
 )
 
@@ -46,6 +48,17 @@ func init() {
 	for _, id := range modelProtocolIDs {
 		modelProtocolRegistry[id] = compatible
 	}
+	codex := modelProtocolAdapter{
+		buildURL: func(model.ModelChannel, string) string { return "" },
+		setAuth:  func(*http.Request, model.ModelChannel) {},
+		models: func(model.ModelChannel) ([]string, error) {
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			return CodexModels(ctx)
+		},
+		testModel: testCodexChannelModel,
+	}
+	modelProtocolRegistry[ModelChannelProtocolCodex] = codex
 	gemini := compatible
 	gemini.buildURL = BuildGeminiChannelURL
 	gemini.setAuth = func(request *http.Request, channel model.ModelChannel) {
@@ -117,6 +130,7 @@ func init() {
 
 // 发现模型、配置测试与生成的命中规则不同，分别保留原有优先级。
 var modelDiscoveryRules = []modelProtocolRule{
+	{ModelChannelProtocolCodex, func(channel model.ModelChannel, _ string) bool { return IsCodexChannel(channel) }},
 	{ModelChannelProtocolAutoDL, func(channel model.ModelChannel, _ string) bool { return IsAutoDLChannel(channel) }},
 	{ModelChannelProtocolGemini, func(channel model.ModelChannel, _ string) bool { return IsGeminiChannel(channel) }},
 	{ModelChannelProtocolMiniMax, func(channel model.ModelChannel, _ string) bool { return IsMiniMaxChannel(channel) }},
@@ -126,6 +140,7 @@ var modelDiscoveryRules = []modelProtocolRule{
 }
 
 var modelConfigTestRules = []modelProtocolRule{
+	{ModelChannelProtocolCodex, func(channel model.ModelChannel, _ string) bool { return IsCodexChannel(channel) }},
 	{ModelChannelProtocolAutoDL, func(channel model.ModelChannel, _ string) bool { return IsAutoDLChannel(channel) }},
 	{ModelChannelProtocolMiniMax, func(channel model.ModelChannel, _ string) bool { return IsMiniMaxChannel(channel) }},
 	{ModelChannelProtocolArk, func(channel model.ModelChannel, _ string) bool { return IsArkChannel(channel) }},

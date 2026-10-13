@@ -52,8 +52,11 @@ ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 ENV PROMPT_DATA_DIR=/app/data/prompts
+ENV CODEX_HOME=/app/data/codex-home
+ENV CODEX_WORK_DIR=/app/data/codex-tasks
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app/data/prompts
+RUN npm install --global @openai/codex@0.161.0
+RUN mkdir -p /app/data/prompts /app/data/codex-home /app/data/codex-tasks
 
 EXPOSE 3000
 # 先启动内部 Go API，再由 Next.js 提供页面并代理 /api/*。

@@ -188,6 +188,7 @@ export type AdminModelChannel = {
     baseUrl: string;
     apiKey: string;
     models: string[];
+    codexModel?: string;
     modelCapabilities?: ModelCapabilities;
     parameterTranslation?: string;
     weight: number;

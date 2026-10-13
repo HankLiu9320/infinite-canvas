@@ -1,4 +1,5 @@
 export const modelChannelProtocols = [
+    { value: "codex", label: "Codex App Server", baseUrl: "" },
     { value: "openai", label: "OpenAI", baseUrl: "https://api.openai.com" },
     { value: "gemini", label: "Gemini", baseUrl: "https://generativelanguage.googleapis.com" },
     { value: "grok2api", label: "Grok2API", baseUrl: "" },
@@ -16,6 +17,7 @@ export const modelChannelProtocols = [
 export type ModelChannelProtocol = (typeof modelChannelProtocols)[number]["value"];
 export type DirectAIProvider = Extract<(typeof modelChannelProtocols)[number], { directRequestPlan: true }>["value"];
 export const modelChannelProtocolOptions = modelChannelProtocols.map(({ value, label }) => ({ label, value }));
+export const localModelChannelProtocolOptions = modelChannelProtocolOptions.filter(({ value }) => value !== "codex");
 export const modelChannelDefaultBaseUrls = Object.fromEntries(modelChannelProtocols.map(({ value, baseUrl }) => [value, baseUrl])) as Record<ModelChannelProtocol, string>;
 export const modelChannelApiKeyUrls = Object.fromEntries(modelChannelProtocols.flatMap((protocol) => "apiKeyUrl" in protocol ? [[protocol.value, protocol.apiKeyUrl]] : [])) as Partial<Record<ModelChannelProtocol, string>>;
 

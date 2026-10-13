@@ -5497,7 +5497,7 @@ function applyCanvasImageTaskUpdate(nodes: CanvasNodeData[], nodeId: string, tas
         const metadata: CanvasNodeMetadata = {
             ...node.metadata,
             status: failed ? NODE_STATUS_ERROR : completed ? NODE_STATUS_SUCCESS : NODE_STATUS_LOADING,
-            errorDetails: failed ? task.error?.message || "图片生成失败" : undefined,
+            errorDetails: failed ? task.error?.message || task.error_detail || (completed && !url ? "图片任务已完成，但未返回图片地址" : "图片生成失败，后端未提供具体原因") : undefined,
             startedAt: taskStartedAt,
             durationMs: Date.now() - taskStartedAt,
             progress,

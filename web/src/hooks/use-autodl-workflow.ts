@@ -26,6 +26,7 @@ export function useAutoDLWorkflowNames(channels: AutoDLChannel[]) {
         staleTime: 300_000,
     })) });
     return (model: string, channel?: AutoDLChannel | null) => {
+        if (channel?.protocol === "codex" && (model === "codex-text" || model === "codex-image")) return model === "codex-text" ? "Codex 文本 / 图片理解" : "Codex 图片生成 / 编辑";
         if (channel?.protocol !== "autodl") return model;
         const baseUrl = (channel.baseUrl || "https://autodl.art").trim().replace(/\/+$/, "");
         return queries[baseUrls.indexOf(baseUrl)]?.data?.find((workflow) => workflow.uuid === model)?.name || model;

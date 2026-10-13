@@ -36,7 +36,7 @@ func selectAIRequestChannel(user model.AuthUser, modelName string, channelID str
 func failAIChannelSelect(w http.ResponseWriter, err error, fallback string) {
 	message := strings.TrimSpace(err.Error())
 	switch message {
-	case "当前账号未开放云端渠道", "请先登录", "缺少模型名称", "缺少模型渠道", "本地渠道不存在", "本地渠道配置不完整", "本地渠道不支持该模型", "指定模型渠道不可用", "模型未开放":
+	case "当前账号未开放云端渠道", "请先登录", "缺少模型名称", "缺少模型渠道", "本地渠道不存在", "本地渠道配置不完整", "本地渠道不支持该模型", "指定模型渠道不可用", "模型未开放", "没有可用模型渠道", "Codex 只能使用管理员配置的系统渠道":
 		Fail(w, message)
 	default:
 		Fail(w, fallback)
@@ -113,6 +113,10 @@ func proxyAIGetRequest(w http.ResponseWriter, r *http.Request, path string) {
 		failAIChannelSelect(w, err, "AI 接口请求失败")
 		return
 	}
+	if service.IsCodexChannel(channel) {
+		Fail(w, "Codex 不支持此查询接口，请使用图片任务查询接口")
+		return
+	}
 	upstreamPath := resolveAIProxyPath(channel, modelName, path)
 	request, err := http.NewRequest(http.MethodGet, resolveAIProxyURL(channel, modelName, upstreamPath), nil)
 	if err != nil {
@@ -151,6 +155,10 @@ func proxyAIRequest(w http.ResponseWriter, r *http.Request, path string) {
 			return
 		}
 		credits *= float64(readAIRequestCount(body, contentType, false))
+	}
+	if service.IsCodexChannel(channel) {
+		serveCodexAI(w, r, body, contentType, path, channel, user, credits)
+		return
 	}
 	if serveParameterTranslation(w, r, body, path, channel, user, credits, startedAt) {
 		return

@@ -263,11 +263,11 @@ export default function AdminSettingsPage() {
     const fetchChannelModelList = async () => {
         if (!token) return;
         const channel = channelForm.getFieldsValue();
-        if (!channel?.baseUrl) {
+        if (channel?.protocol !== "codex" && !channel?.baseUrl) {
             message.warning("请先填写接口地址");
             return;
         }
-        if (editingChannelIndex === null && !channel?.apiKey) {
+        if (channel?.protocol !== "codex" && editingChannelIndex === null && !channel?.apiKey) {
             message.warning("请先填写 API Key");
             return;
         }
@@ -294,7 +294,7 @@ export default function AdminSettingsPage() {
 
     const openTestDialog = (index: number) => {
         const channel = normalizeChannel(channels[index]);
-        if (!channel.baseUrl || channel.models.length === 0) {
+        if ((channel.protocol !== "codex" && !channel.baseUrl) || channel.models.length === 0) {
             message.warning("请先填写接口地址和至少一个模型");
             return;
         }
@@ -913,6 +913,7 @@ export default function AdminSettingsPage() {
                                         options={modelChannelProtocolOptions}
                                         onChange={(protocol: AdminModelChannel["protocol"]) => {
                                             channelForm.setFieldValue("baseUrl", modelChannelDefaultBaseUrls[protocol]);
+                                            if (protocol === "codex") channelForm.setFieldsValue({ apiKey: "", models: ["codex-text", "codex-image"], modelCapabilities: { "codex-text": "text", "codex-image": "image" }, parameterTranslation: "" });
                                             setWorkflowChannelDraft((current) => ({ ...current, protocol, baseUrl: modelChannelDefaultBaseUrls[protocol] }));
                                         }}
                                     />
@@ -934,6 +935,11 @@ export default function AdminSettingsPage() {
                                     <Switch />
                                 </Form.Item>
                             </Col>
+                            {channelProtocol === "codex" ? <Col span={24}>
+                                <Form.Item name="codexModel" label="Codex 执行模型（可选）" extra="留空使用 Codex 默认模型；Go 后端管理 app-server 子进程，使用后端机器的 Codex 登录状态，无需 API Key。codex-text 用于文本和图片理解，codex-image 用于原生生图及编辑。">
+                                    <Input placeholder="填写从 Codex 拉取的实际模型 ID" />
+                                </Form.Item>
+                            </Col> : <>
                             <Col span={24}>
                                 <Form.Item
                                     name="baseUrl"
@@ -965,6 +971,7 @@ export default function AdminSettingsPage() {
                                     <Input.Password placeholder={editingChannelIndex === null ? "" : "留空则沿用已保存的 API Key"} />
                                 </Form.Item>
                             </Col>
+                            </>}
                             <Col span={24}>
                                 <Form.Item label="渠道可用模型">
                                     <Space.Compact style={{ width: "100%" }}>
@@ -1204,6 +1211,7 @@ function normalizeChannel(item: Partial<AdminModelChannel> = {}): AdminModelChan
         name: item.name || "",
         baseUrl: item.baseUrl || "",
         apiKey: item.apiKey || "",
+        codexModel: item.codexModel || "",
         models: item.models || [],
         modelCapabilities: item.modelCapabilities || {},
         parameterTranslation: item.parameterTranslation || "",

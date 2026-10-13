@@ -17,11 +17,11 @@ import { grokTtsFormatOptions, grokTtsLanguageOptions, isGrok2APITtsConfig, norm
 import { isGeminiConfig, isGeminiTtsModel } from "@/lib/gemini";
 import { geminiTtsVoiceOptions, normalizeGeminiTtsVoice } from "@/lib/gemini-tts";
 import { isMimoPresetTtsModel, isMimoTtsModel, isMimoVoiceCloneModel, isMimoVoiceDesignModel, mimoTtsFormatOptions, mimoTtsVoiceOptions } from "@/lib/mimo-tts";
-import { isWorkflowProtocol, modelChannelApiKeyUrls, modelChannelDefaultBaseUrls, modelChannelProtocolOptions } from "@/lib/model-channel";
+import { isWorkflowProtocol, modelChannelApiKeyUrls, modelChannelDefaultBaseUrls, localModelChannelProtocolOptions } from "@/lib/model-channel";
 import { startTokenDanceOAuth } from "@/lib/tokendance-oauth";
 import type { WorkflowChannelData, WorkflowEntry } from "@/lib/workflow-channel";
 import { listWorkflowChannels, readWorkflowChannel, replaceWorkflowChannels, saveWorkflowChannel } from "@/services/workflow-channel-storage";
-import { filterChannelModelsByCapability, normalizeLocalChannels, useConfigStore, useEffectiveConfig, type AiConfig, type LocalModelChannel, type ModelCapabilities, type ModelCapability } from "@/stores/use-config-store";
+import { filterChannelModelsByCapability, normalizeLocalChannels, selectableModelsByCapability, useConfigStore, useEffectiveConfig, type AiConfig, type LocalModelChannel, type ModelCapabilities, type ModelCapability } from "@/stores/use-config-store";
 import { useUserStore } from "@/stores/use-user-store";
 import { useChannelTranslationStore } from "@/stores/use-channel-translation-store";
 
@@ -179,7 +179,9 @@ export function AppConfigModal() {
 
     const finishConfig = async () => {
         const localIncomplete = effectiveMode === "local" && normalizeLocalChannels(config).filter((channel) => !isWorkflowProtocol(channel.protocol)).some((channel) => !channel.baseUrl.trim() || !channel.apiKey.trim());
-        const modelIncomplete = !modelConfig.imageModel.trim() || !modelConfig.videoModel.trim() || !modelConfig.textModel.trim();
+        const modelIncomplete = modelGroups.some(({ capability, modelKey, workflowKey }) => selectableModelsByCapability(modelConfig, capability).length > 0 && !modelConfig[modelKey].trim() && !(workflowKey && modelConfig[workflowKey]));
+        const codexLocal = effectiveMode === "local" && [modelConfig.textModel, modelConfig.imageModel].some((model) => model === "codex-text" || model === "codex-image");
+        const remoteIncomplete = effectiveMode === "remote" && !modelConfig.publicChannels.some((channel) => channel.models?.length || channel.workflows?.length);
 		if (userStorage.enabled && userWebDAVStorage.enabled) {
 			message.error("S3/R2 与 WebDAV 不能同时启用");
 			return;
@@ -222,7 +224,9 @@ export function AppConfigModal() {
             clearFileStorageCache();
             setConfigDialogOpen(false);
             if ((config.syncStorageConfig || config.syncWebDAVStorageConfig) && !token) message.warning("请登录后再同步配置");
-            else if (localIncomplete || modelIncomplete) message.warning("部分模型或本地渠道密钥尚未配置完整，配置已保存");
+            else if (codexLocal) message.warning("Codex 模型需使用管理员配置的云端渠道，请切换渠道模式后重新选择模型");
+            else if (remoteIncomplete) message.warning("配置已保存，当前没有可用的云端模型渠道，请先在管理后台配置并启用");
+            else if (localIncomplete || modelIncomplete) message.warning("部分可用模型或本地渠道密钥尚未配置完整，配置已保存");
             else message.success(shouldPromptContinue ? "配置已保存，请继续刚才的请求" : "配置已保存");
             clearPromptContinue();
         } catch (error) {
@@ -471,7 +475,7 @@ export function AppConfigModal() {
                                             <Input value={channel.name} placeholder="渠道名称" onChange={(event) => patchLocalChannel(channel.id, { name: event.target.value })} />
                                             <Select
                                                 value={channel.protocol}
-                                                options={modelChannelProtocolOptions}
+                                                options={localModelChannelProtocolOptions}
                                                 onChange={(protocol: LocalModelChannel["protocol"]) => patchLocalChannel(channel.id, { protocol, baseUrl: modelChannelDefaultBaseUrls[protocol] })}
                                             />
                                             {isWorkflowProtocol(channel.protocol) ? <div className="flex h-8 items-center justify-center rounded-md border border-dashed border-[var(--ant-color-border)] px-3 text-xs text-[var(--ant-color-text-secondary)] md:col-span-2">连接信息和工作流在「选择」里配置</div> : <><Input value={channel.baseUrl} placeholder="Base URL" onChange={(event) => patchLocalChannel(channel.id, { baseUrl: event.target.value })} /><Input.Password value={channel.apiKey} placeholder="API Key" onChange={(event) => patchLocalChannel(channel.id, { apiKey: event.target.value })} /></>}
