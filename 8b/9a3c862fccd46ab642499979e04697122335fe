@@ -1,0 +1,27 @@
+docs/progress/pending-test.md
+  s_d8885fafc2aedf::t_2f73ac934167d6 14,24-26
+docs/backend/local-development.md
+  s_d8885fafc2aedf::t_2f73ac934167d6 81-82
+service/codex_client.go
+  s_d8885fafc2aedf::t_dcddb3ac9af9ac 173-175
+service/codex.go
+  s_d8885fafc2aedf::t_dcddb3ac9af9ac 487
+CHANGELOG.md
+  s_d8885fafc2aedf::t_2f73ac934167d6 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "8b9a3c862fccd46ab642499979e04697122335fe",
+  "prompts": {},
+  "sessions": {
+    "s_d8885fafc2aedf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13487-5a23-7883-b3d4-b74cc1ef519f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "liujianjia <liujianjia@jd.com>"
+    }
+  }
+}
